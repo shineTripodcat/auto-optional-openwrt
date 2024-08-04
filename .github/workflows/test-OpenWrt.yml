@@ -91,17 +91,15 @@ jobs:
       - name: Set REPO_BRANCH
         id: set_branch
         run: |
-          echo "REPO_BRANCH=${{ 
-            if (github.event.inputs.repo == 'lede-23.05' && github.event.inputs.branch_lede != '关闭') {
-              github.event.inputs.branch_lede 
-            } else if (github.event.inputs.repo == 'immortalwrt-Mt798X' && github.event.inputs.branch_immortalwrt-Mt798X != '关闭') {
-              github.event.inputs.branch_immortalwrt-Mt798X 
-            } else if (github.event.inputs.repo == 'immortalwrt' && github.event.inputs.branch_immortalwrt != '关闭') {
-              github.event.inputs.branch_immortalwrt 
-            } else {
-              ''
-            }
-          }}" >> $GITHUB_ENV
+          if [ "${{ github.event.inputs.repo }}" == "lede-23.05" ] && [ "${{ github.event.inputs.branch_lede }}" != "关闭" ]; then
+            echo "REPO_BRANCH=${{ github.event.inputs.branch_lede }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.repo }}" == "immortalwrt-Mt798X" ] && [ "${{ github.event.inputs.branch_immortalwrt-Mt798X }}" != "关闭" ]; then
+            echo "REPO_BRANCH=${{ github.event.inputs.branch_immortalwrt-Mt798X }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.repo }}" == "immortalwrt" ] && [ "${{ github.event.inputs.branch_immortalwrt }}" != "关闭" ]; then
+            echo "REPO_BRANCH=${{ github.event.inputs.branch_immortalwrt }}" >> $GITHUB_ENV
+          else
+            echo "REPO_BRANCH=" >> $GITHUB_ENV
+          fi
 
       - name: Check Server Performance
         run: |
