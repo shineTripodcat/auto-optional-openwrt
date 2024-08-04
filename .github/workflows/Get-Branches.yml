@@ -17,26 +17,6 @@ jobs:
   generate-branches:
     runs-on: ubuntu-latest
     steps:
-      - name: Set repository info
-        id: set_repo_infoname: Generate Branches File
-
-on:
-  workflow_dispatch:
-    inputs:
-      repo:
-        description: '选择源码'
-        required: true
-        default: 'lede'
-        type: choice
-        options:
-          - 'lede'
-          - 'immortalwrt'
-          - 'immortalwrt-mt798x'
-
-jobs:
-  generate-branches:
-    runs-on: ubuntu-latest
-    steps:
       - name: Set up Git
         uses: actions/checkout@v2
 
@@ -76,7 +56,7 @@ jobs:
           
           # 创建 branches.txt 文件
           echo "REPO_OWNER=${{ github.repository_owner }}" > branches.txt
-          echo "REPO_NAME=${{ github.event.repository.name }}" >> branches.txt
+          echo "REPO_NAME=${{ github.repository }}" >> branches.txt
           echo "BRANCHES=$branches" >> branches.txt
 
       - name: Commit and push branches.txt
@@ -86,39 +66,3 @@ jobs:
           git add branches.txt
           git commit -m "Update branches.txt with repo info and branches"
           git push origin HEAD:main
-
-        run: |
-          case "${{ github.event.inputs.repo }}" in
-            lede)
-              echo "REPO_OWNER=coolsnowwolf" >> $GITHUB_ENV
-              echo "REPO_NAME=lede" >> $GITHUB_ENV
-              ;;
-            immortalwrt)
-              echo "REPO_OWNER=immortalwrt" >> $GITHUB_ENV
-              echo "REPO_NAME=immortalwrt" >> $GITHUB_ENV
-              ;;
-            immortalwrt-mt798x)
-              echo "REPO_OWNER=padavanonly" >> $GITHUB_ENV
-              echo "REPO_NAME=immortalwrt-mt798x" >> $GITHUB_ENV
-              ;;
-            *)
-              echo "Invalid repository selected" >&2
-              exit 1
-              ;;
-          esac
-
-      - name: Debug info
-        run: |
-          echo "REPO_OWNER=${{ env.REPO_OWNER }}"
-          echo "REPO_NAME=${{ env.REPO_NAME }}"
-
-      - name: Get branches from another repository
-        run: |
-          echo "Fetching branches from https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}.git"
-          branches=$(git ls-remote --heads https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}.git)
-          echo "Branches output: $branches"
-          branches=$(echo "$branches" | awk '{print $2}' | sed 's|refs/heads/||' | tr '\n' ',' | sed 's/,$//')
-          echo "Branches: $branches" | tee branches.txt
-
-      - name: Display branches
-        run: cat branches.txt
