@@ -13,6 +13,9 @@ on:
           - 'immortalwrt'
           - 'immortalwrt-mt798x'
 
+permissions:
+  contents: write  # 为内容提供写权限
+
 jobs:
   generate-branches:
     runs-on: ubuntu-latest
@@ -49,7 +52,9 @@ jobs:
 
       - name: Get branches from another repository
         run: |
+          echo "Fetching branches from https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}.git"
           branches=$(git ls-remote --heads https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}.git)
+          echo "Branches output: $branches"
           branches=$(echo "$branches" | awk '{print $2}' | sed 's|refs/heads/||' | tr '\n' ',' | sed 's/,$//')
           
           # 创建 branches.txt 文件
@@ -63,13 +68,4 @@ jobs:
           git config --local user.email "actions@github.com"
           git add branches.txt
           git commit -m "Update branches.txt with repo info and branches"
-          git push https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ github.repository }}.git HEAD:feature/update-branches
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.HQ_TOKEN }}
-          title: "Update branches.txt"
-          body: "This PR updates branches.txt with the latest branch information."
-          head: feature/update-branches
-          base: main
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
