@@ -82,11 +82,11 @@ env:
     immortalwrt: 'imm.config'
   CONFIG_FILE: ${{ env.CONFIG_FILES[github.event.inputs.repo] }}
 
-  # 根据选择的分支设置最终的 REPO_BRANCH
+# 根据选择的分支设置最终的 REPO_BRANCH
   REPO_BRANCH: ${{ 
-    (github.event.inputs.repo == 'lede-23.05' && github.event.inputs.branch_lede != '关闭') ? github.event.inputs.branch_lede : 
-    (github.event.inputs.repo == 'immortalwrt-Mt798X' && github.event.inputs.branch_immortalwrt-Mt798X != '关闭') ? github.event.inputs.branch_immortalwrt-Mt798X : 
-    (github.event.inputs.repo == 'immortalwrt' && github.event.inputs.branch_immortalwrt != '关闭') ? github.event.inputs.branch_immortalwrt :
+    (github.event.inputs.repo == 'lede-23.05' && github.event.inputs.branch_lede!= '关闭')? github.event.inputs.branch_lede : 
+    (github.event.inputs.repo == 'immortalwrt-Mt798X' && github.event.inputs.branch_immortalwrt-Mt798X!= '关闭')? github.event.inputs.branch_immortalwrt-Mt798X : 
+    (github.event.inputs.repo == 'immortalwrt' && github.event.inputs.branch_immortalwrt!= '关闭')? github.event.inputs.branch_immortalwrt :
     '' 
   }}
 
