@@ -6,7 +6,7 @@
   },
   "CONFIG_FILES": {
     "lede-23.05": "lede.config",
-    "immortalwrt-Mt798X": "imm-mt798x.config",
+    "immortalwrt-Mt798X": "imm.config",
     "immortalwrt": "imm.config"
   },
   "DIY_SCRIPTS": {
