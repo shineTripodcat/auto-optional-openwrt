@@ -1,0 +1,66 @@
+name: Generate Branches File
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: '选择源码'
+        required: true
+        default: 'lede'
+        type: choice
+        options:
+          - 'lede'
+          - 'immortalwrt'
+          - 'immortalwrt-mt798x'
+          - 'new-repo'  # 新增选项
+
+jobs:
+  generate-branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set repository info
+        id: set_repo_info
+        run: |
+          case "${{ github.event.inputs.repo }}" in
+            lede)
+              echo "REPO_OWNER=coolsnowwolf" >> $GITHUB_ENV
+              echo "REPO_NAME=lede" >> $GITHUB_ENV
+              ;;
+            immortalwrt)
+              echo "REPO_OWNER=immortalwrt" >> $GITHUB_ENV
+              echo "REPO_NAME=immortalwrt" >> $GITHUB_ENV
+              ;;
+            immortalwrt-mt798x)
+              echo "REPO_OWNER=padavanonly" >> $GITHUB_ENV
+              echo "REPO_NAME=immortalwrt-mt798x" >> $GITHUB_ENV
+              ;;
+            new-repo)
+              echo "REPO_OWNER=newowner" >> $GITHUB_ENV
+              echo "REPO_NAME=new-repo" >> $GITHUB_ENV
+              ;;
+            *)
+              echo "Invalid repository selected" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}
+          ref: main
+
+      - name: Get branches
+        run: |
+          branches=$(git branch -r | grep -v '\->' | sed 's/origin\///' | tr '\n' ',' | sed 's/,$//')
+          echo "Branches: $branches" > branches.txt
+
+      - name: Commit and push branches.txt
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add branches.txt
+          git commit -m "Add branches list"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
