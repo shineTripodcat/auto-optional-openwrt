@@ -50,7 +50,7 @@ jobs:
           branches=$(git ls-remote --heads https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}.git)
           echo "Branches output: $branches"
           branches=$(echo "$branches" | awk '{print $2}' | sed 's|refs/heads/||' | tr '\n' ',' | sed 's/,$//')
-          echo "Branches: $branches" > branches.txt
+          echo "Branches: $branches" | tee branches.txt
 
       - name: Display branches
         run: cat branches.txt
