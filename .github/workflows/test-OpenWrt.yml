@@ -75,6 +75,7 @@ env:
   CACHE_TOOLCHAIN: true
   TZ: Asia/Shanghai
   FEEDS_CONF: feeds.conf.default
+  
 jobs:
   example_job:
     runs-on: ubuntu-22.04
@@ -85,11 +86,6 @@ jobs:
       - name: Install jq
         run: sudo apt-get install jq
         
-      - name: Set environment variables
-        run: |
-          echo "UPLOAD_FIRMWARE=${{ github.event.inputs.UPLOAD_FIRMWARE }}" >> $GITHUB_ENV
-          echo "UPLOAD_RELEASE=${{ github.event.inputs.UPLOAD_RELEASE }}" >> $GITHUB_ENV
-
       - name: Read JSON
         id: read_json
         run: |
@@ -111,16 +107,6 @@ jobs:
           else
             echo "REPO_BRANCH=" >> $GITHUB_ENV
           fi
-      - name: Display inputs
-        run: |
-          echo "Repo: ${{ github.event.inputs.repo }}"
-          echo "Branch LEDE: ${{ github.event.inputs.branch_lede }}"
-          echo "Branch ImmortalWRT Mt798X: ${{ github.event.inputs.branch_immortalwrt-Mt798X }}"
-          echo "Branch ImmortalWRT: ${{ github.event.inputs.branch_immortalwrt }}"
-          echo "Config File: ${{ github.event.inputs.CONFIG_FILE }}"
-          echo "SSH Action: ${{ github.event.inputs.SSH_ACTION }}"
-          echo "Upload Firmware: ${{ github.event.inputs.UPLOAD_FIRMWARE }}"
-          echo "Upload Release: ${{ github.event.inputs.UPLOAD_RELEASE }}"
 
       - name: Check Server Performance
         run: |
