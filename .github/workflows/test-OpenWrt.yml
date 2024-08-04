@@ -68,7 +68,9 @@ on:
         required: false
         default: 'false'
         type: boolean
-
+env:        
+  CACHE_TOOLCHAIN: true
+  TZ: Asia/Shanghai
 jobs:
   example_job:
     runs-on: ubuntu-22.04
