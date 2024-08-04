@@ -19,13 +19,7 @@ on:
         required: true
         default: 'main'
         type: choice
-        options:
-          - 'master'                     # 默认分支选项
-          - 'openwrt-18.06'
-          - 'openwrt-18.06-k5.4'
-          - 'openwrt-21.02'
-          - 'openwrt-23.05'
-          - 'mt7988'                     # 其他分支选项
+        options: ${{ fromJson(env.SELECTED_BRANCHES) }}  # 动态获取分支选项
       CONFIG_FILE:
         description: '请选择配置文件'
         required: true
