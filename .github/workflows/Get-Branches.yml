@@ -47,13 +47,8 @@ jobs:
       - name: Get branches from another repository
         run: |
           # 使用 PAT 访问另一个仓库并获取分支
-          branches=$(git ls-remote --heads https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/another_owner/another_repo.git | awk '{print $2}' | sed 's|refs/heads/||' | tr '\n' ',' | sed 's/,$//')
+          branches=$(git ls-remote --heads https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}.git | awk '{print $2}' | sed 's|refs/heads/||' | tr '\n' ',' | sed 's/,$//')
           echo "Branches: $branches" > branches.txt
 
-      - name: Commit and push branches.txt
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "github-actions@github.com"
-          git add branches.txt
-          git commit -m "Add branches list"
-          git push https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}.git
+      - name: Display branches
+        run: cat branches.txt
