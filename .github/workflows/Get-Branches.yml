@@ -12,7 +12,7 @@ on:
           - 'lede'
           - 'immortalwrt'
           - 'immortalwrt-mt798x'
-          #- 'new-repo'  # 新增选项
+          # - 'new-repo'  # 新增选项
 
 jobs:
   generate-branches:
@@ -34,24 +34,30 @@ jobs:
               echo "REPO_OWNER=padavanonly" >> $GITHUB_ENV
               echo "REPO_NAME=immortalwrt-mt798x" >> $GITHUB_ENV
               ;;
-            #new-repo)
-              #echo "REPO_OWNER=newowner" >> $GITHUB_ENV
-              #echo "REPO_NAME=new-repo" >> $GITHUB_ENV
-              #;;
+            # new-repo)
+            #   echo "REPO_OWNER=newowner" >> $GITHUB_ENV
+            #   echo "REPO_NAME=new-repo" >> $GITHUB_ENV
+            #   ;;
             *)
               echo "Invalid repository selected" >&2
               exit 1
               ;;
           esac
 
+      - name: Debug info
+        run: |
+          echo "REPO_OWNER=${{ env.REPO_OWNER }}"
+          echo "REPO_NAME=${{ env.REPO_NAME }}"
+
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           repository: ${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}
-          ref: main
+          fetch-depth: 0  # 获取所有历史记录
 
-      - name: Get branches
+      - name: Get all branches
         run: |
+          git fetch --all  # 获取所有远程分支
           branches=$(git branch -r | grep -v '\->' | sed 's/origin\///' | tr '\n' ',' | sed 's/,$//')
           echo "Branches: $branches" > branches.txt
 
