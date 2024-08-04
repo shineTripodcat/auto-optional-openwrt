@@ -69,35 +69,25 @@ on:
         default: 'false'
         type: boolean
 
-env:
-  REPO_URLS:
-    lede-23.05: 'https://github.com/coolsnowwolf/lede'
-    immortalwrt-Mt798X: 'https://github.com/padavanonly/immortalwrt-mt798x'
-    immortalwrt: 'https://github.com/immortalwrt/immortalwrt'
-
-  REPO_URL: ${{ env.REPO_URLS[github.event.inputs.repo] }}
-  CONFIG_FILES:
-    lede-23.05: 'lede.config'
-    immortalwrt-Mt798X: 'imm-mt798x.config'
-    immortalwrt: 'imm.config'
-  CONFIG_FILE: ${{ env.CONFIG_FILES[github.event.inputs.repo] }}
-
-  DIY_SCRIPTS:
-    lede-23.05:
-      P1: 'lede-23.05-DIY/diy-part1-lede.sh'
-      P2: 'lede-23.05-DIY/diy-part2-lede.sh'
-    immortalwrt:
-      P1: 'immortalwrt-DIY/diy-part1-imm.sh'
-      P2: 'immortalwrt-DIY/diy-part2-imm.sh'
-    immortalwrt-Mt798X:
-      P1: 'immortalwrt-Mt798X-DIY/diy-part1-mt798x.sh'
-      P2: 'immortalwrt-Mt798X-DIY/diy-part2-mt798x.sh'
-      P3: 'immortalwrt-Mt798X-DIY/diy-part3-mt798x.sh'
-
 jobs:
   example_job:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install jq
+        run: sudo apt-get install jq
+
+      - name: Read JSON
+        id: read_json
+        run: |
+          echo "REPO_URL=$(jq -r '.REPO_URLS["${{ github.event.inputs.repo }}"]' data.json)" >> $GITHUB_ENV
+          echo "CONFIG_FILE=$(jq -r '.CONFIG_FILES["${{ github.event.inputs.repo }}"]' data.json)" >> $GITHUB_ENV
+          echo "DIY_P1=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P1' data.json)" >> $GITHUB_ENV
+          echo "DIY_P2=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P2' data.json)" >> $GITHUB_ENV
+          echo "DIY_P3=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P3 // empty' data.json)" >> $GITHUB_ENV
+
       - name: Set REPO_BRANCH
         id: set_branch
         run: |
