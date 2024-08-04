@@ -12,7 +12,6 @@ on:
           - 'lede'
           - 'immortalwrt'
           - 'immortalwrt-mt798x'
-          # - 'new-repo'  # 新增选项
 
 jobs:
   generate-branches:
@@ -45,19 +44,10 @@ jobs:
           echo "REPO_OWNER=${{ env.REPO_OWNER }}"
           echo "REPO_NAME=${{ env.REPO_NAME }}"
 
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}
-          fetch-depth: 0  # 获取所有历史记录
-
-      - name: Get all branches from another repository
+      - name: Get branches from another repository
         run: |
-          # 使用 PAT 访问另一个仓库
-          git clone https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/another_owner/another_repo.git
-          cd another_repo
-          git fetch --all  # 获取所有远程分支
-          branches=$(git branch -r | grep -v '\->' | sed 's/origin\///' | tr '\n' ',' | sed 's/,$//')
+          # 使用 PAT 访问另一个仓库并获取分支
+          branches=$(git ls-remote --heads https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/another_owner/another_repo.git | awk '{print $2}' | sed 's|refs/heads/||' | tr '\n' ',' | sed 's/,$//')
           echo "Branches: $branches" > branches.txt
 
       - name: Commit and push branches.txt
