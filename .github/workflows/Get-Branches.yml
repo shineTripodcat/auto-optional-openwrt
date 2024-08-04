@@ -34,10 +34,6 @@ jobs:
               echo "REPO_OWNER=padavanonly" >> $GITHUB_ENV
               echo "REPO_NAME=immortalwrt-mt798x" >> $GITHUB_ENV
               ;;
-            # new-repo)
-            #   echo "REPO_OWNER=newowner" >> $GITHUB_ENV
-            #   echo "REPO_NAME=new-repo" >> $GITHUB_ENV
-            #   ;;
             *)
               echo "Invalid repository selected" >&2
               exit 1
@@ -55,8 +51,11 @@ jobs:
           repository: ${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}
           fetch-depth: 0  # 获取所有历史记录
 
-      - name: Get all branches
+      - name: Get all branches from another repository
         run: |
+          # 使用 PAT 访问另一个仓库
+          git clone https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/another_owner/another_repo.git
+          cd another_repo
           git fetch --all  # 获取所有远程分支
           branches=$(git branch -r | grep -v '\->' | sed 's/origin\///' | tr '\n' ',' | sed 's/,$//')
           echo "Branches: $branches" > branches.txt
@@ -67,6 +66,4 @@ jobs:
           git config --local user.email "github-actions@github.com"
           git add branches.txt
           git commit -m "Add branches list"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}.git
