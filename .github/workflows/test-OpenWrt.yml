@@ -82,13 +82,28 @@ env:
     immortalwrt: 'imm.config'
   CONFIG_FILE: ${{ env.CONFIG_FILES[github.event.inputs.repo] }}
 
-# 根据选择的分支设置最终的 REPO_BRANCH
-  REPO_BRANCH: ${{ 
-    (github.event.inputs.repo == 'lede-23.05' && github.event.inputs.branch_lede!= '关闭')? github.event.inputs.branch_lede : 
-    (github.event.inputs.repo == 'immortalwrt-Mt798X' && github.event.inputs.branch_immortalwrt-Mt798X!= '关闭')? github.event.inputs.branch_immortalwrt-Mt798X : 
-    (github.event.inputs.repo == 'immortalwrt' && github.event.inputs.branch_immortalwrt!= '关闭')? github.event.inputs.branch_immortalwrt :
-    '' 
-  }}
+jobs:
+  example_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set REPO_BRANCH
+        id: set_branch
+        run: |
+          echo "REPO_BRANCH=${{ 
+            if (github.event.inputs.repo == 'lede-23.05' && github.event.inputs.branch_lede != '关闭') {
+              github.event.inputs.branch_lede 
+            } else if (github.event.inputs.repo == 'immortalwrt-Mt798X' && github.event.inputs.branch_immortalwrt-Mt798X != '关闭') {
+              github.event.inputs.branch_immortalwrt-Mt798X 
+            } else if (github.event.inputs.repo == 'immortalwrt' && github.event.inputs.branch_immortalwrt != '关闭') {
+              github.event.inputs.branch_immortalwrt 
+            } else {
+              ''
+            }
+          }}" >> $GITHUB_ENV
+# 下面是可以添加新的 repo 和分支的示例
+# else if (github.event.inputs.repo == '新仓库名称' && github.event.inputs.branch_新仓库名称 != '关闭') {
+#   github.event.inputs.branch_新仓库名称 
+# }
 
   DIY_SCRIPTS:
     lede-23.05:
