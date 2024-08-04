@@ -11,12 +11,21 @@ on:
         options:
           - 'lede-23.05'
           - 'immortalwrt-21.05'
+          - 'immortalwrt'                
+         # - 'new-repo-2'                # 新的仓库
+         # - 'new-repo-3'                # 新的仓库
       branch:
         description: '选择分支'
         required: true
         default: 'main'
         type: choice
-        options: ${{ fromJson(needs.get-branches.outputs.branches) }}  # 使用输出的分支列表
+        options:
+          - 'master'                     # 默认分支选项
+          - 'openwrt-18.06'
+          - 'openwrt-18.06-k5.4'
+          - 'openwrt-21.02'
+          - 'openwrt-23.05'
+          - 'mt7988'                     # 其他分支选项
       CONFIG_FILE:
         description: '请选择配置文件'
         required: true
@@ -45,13 +54,46 @@ env:
   REPO_URLS:
     lede-23.05: 'https://github.com/coolsnowwolf/lede'
     immortalwrt-21.05: 'https://github.com/padavanonly/immortalwrt-mt798x'
-  REPO_URL: ${{ env.REPO_URLS[github.event.inputs.repo] }}
+    immortalwrt: 'https://github.com/immortalwrt/immortalwrt'  # 新的仓库 URL
+    new-repo-2: 'https://github.com/user/new-repo-2'  # 新的仓库 URL
+    new-repo-3: 'https://github.com/user/new-repo-3'  # 新的仓库 URL
 
+  # 定义分支选项
+  REPO_BRANCHES:
+    lede-23.05: 
+      - 'master'
+      - 'openwrt-18.06'
+      - 'openwrt-18.06-k5.4'
+      - 'openwrt-21.02'
+      - 'openwrt-23.05'
+      - 'mt7988'
+    immortalwrt-21.05: 
+      - 'openwrt-21.02'
+      - 'mt7988'
+    immortalwrt: 
+      - 'master'
+      - 'openwrt-18.06'
+      - 'openwrt-18.06-k5.4'
+      - 'openwrt-21.02'
+      - 'openwrt-23.05'
+    #new-repo-2: 
+      - 'branchA'
+      - 'branchB'
+    #new-repo-3: 
+      - 'branchX'
+      - 'branchY'
+
+  REPO_URL: ${{ env.REPO_URLS[github.event.inputs.repo] }}
   CONFIG_FILES:
     lede-23.05: 'lede.config'
     immortalwrt-21.05: 'imm.config'
+    #new-repo-1: 'new-repo-1.config'
+    #new-repo-2: 'new-repo-2.config'
+    #new-repo-3: 'new-repo-3.config'
   CONFIG_FILE: ${{ env.CONFIG_FILES[github.event.inputs.repo] }}
 
+  # 根据选择的 repo 获取对应的分支
+  SELECTED_BRANCHES: ${{ toJson(env.REPO_BRANCHES[github.event.inputs.repo]) }}
   DIY_SCRIPTS:
     lede-23.05:
       P1: 'diy-part1-lede.sh'
@@ -70,7 +112,6 @@ env:
   UPLOAD_BIN_DIR: false
   CACHE_TOOLCHAIN: true
   TZ: Asia/Shanghai
-
 
 jobs:
   build:
