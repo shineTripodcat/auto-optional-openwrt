@@ -12,7 +12,7 @@ on:
           - 'lede'
           - 'immortalwrt'
           - 'immortalwrt-mt798x'
-          - 'new-repo'  # 新增选项
+          #- 'new-repo'  # 新增选项
 
 jobs:
   generate-branches:
@@ -34,10 +34,10 @@ jobs:
               echo "REPO_OWNER=padavanonly" >> $GITHUB_ENV
               echo "REPO_NAME=immortalwrt-mt798x" >> $GITHUB_ENV
               ;;
-            new-repo)
-              echo "REPO_OWNER=newowner" >> $GITHUB_ENV
-              echo "REPO_NAME=new-repo" >> $GITHUB_ENV
-              ;;
+            #new-repo)
+              #echo "REPO_OWNER=newowner" >> $GITHUB_ENV
+              #echo "REPO_NAME=new-repo" >> $GITHUB_ENV
+              #;;
             *)
               echo "Invalid repository selected" >&2
               exit 1
