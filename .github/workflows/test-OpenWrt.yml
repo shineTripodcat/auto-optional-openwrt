@@ -68,7 +68,10 @@ on:
         required: false
         default: 'false'
         type: boolean
-env:        
+env:
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: false
+  UPLOAD_BIN_DIR: false
   CACHE_TOOLCHAIN: true
   TZ: Asia/Shanghai
   FEEDS_CONF: feeds.conf.default
@@ -81,6 +84,11 @@ jobs:
 
       - name: Install jq
         run: sudo apt-get install jq
+        
+      - name: Set environment variables
+        run: |
+          echo "UPLOAD_FIRMWARE=${{ github.event.inputs.UPLOAD_FIRMWARE }}" >> $GITHUB_ENV
+          echo "UPLOAD_RELEASE=${{ github.event.inputs.UPLOAD_RELEASE }}" >> $GITHUB_ENV
 
       - name: Read JSON
         id: read_json
@@ -91,7 +99,7 @@ jobs:
           echo "DIY_P2=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P2' data.json)" >> $GITHUB_ENV
           echo "DIY_P3=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P3 // empty' data.json)" >> $GITHUB_ENV
 
-      - name: Set REPO_BRANCH
+      - name: 根据选择设置分支
         id: set_branch
         run: |
           if [ "${{ github.event.inputs.repo }}" == "lede-23.05" ] && [ "${{ github.event.inputs.branch_lede }}" != "关闭" ]; then
@@ -103,6 +111,16 @@ jobs:
           else
             echo "REPO_BRANCH=" >> $GITHUB_ENV
           fi
+      - name: Display inputs
+        run: |
+          echo "Repo: ${{ github.event.inputs.repo }}"
+          echo "Branch LEDE: ${{ github.event.inputs.branch_lede }}"
+          echo "Branch ImmortalWRT Mt798X: ${{ github.event.inputs.branch_immortalwrt-Mt798X }}"
+          echo "Branch ImmortalWRT: ${{ github.event.inputs.branch_immortalwrt }}"
+          echo "Config File: ${{ github.event.inputs.CONFIG_FILE }}"
+          echo "SSH Action: ${{ github.event.inputs.SSH_ACTION }}"
+          echo "Upload Firmware: ${{ github.event.inputs.UPLOAD_FIRMWARE }}"
+          echo "Upload Release: ${{ github.event.inputs.UPLOAD_RELEASE }}"
 
       - name: Check Server Performance
         run: |
