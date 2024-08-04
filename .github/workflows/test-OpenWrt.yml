@@ -71,6 +71,7 @@ on:
 env:        
   CACHE_TOOLCHAIN: true
   TZ: Asia/Shanghai
+  FEEDS_CONF: feeds.conf.default
 jobs:
   example_job:
     runs-on: ubuntu-22.04
