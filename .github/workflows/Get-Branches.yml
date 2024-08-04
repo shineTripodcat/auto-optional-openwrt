@@ -65,5 +65,5 @@ jobs:
           git config --local user.email "actions@github.com"
           git add branches.txt
           git commit -m "Update branches.txt with repo info and branches"
-          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+          git push https://x-access-token:${{ secrets.HQ_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
 
