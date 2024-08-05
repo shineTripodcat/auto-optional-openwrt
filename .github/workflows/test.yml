@@ -78,51 +78,6 @@ jobs:
   auto_optional_openwrt:
     runs-on: ubuntu-22.04 # 配置运行环境为 Ubuntu 20.04
     steps:
-      - name: Clone 当前仓库 # 检出当前仓库代码
-        uses: actions/checkout@v2
-        
-      - name: 安装jq # 安装jq 用于读取data.json
-        run: sudo apt-get install jq
-        
-      - name: 读取data配置
-        id: read_json
-        run: |
-          echo "REPO_URL=$(jq -r '.REPO_URLS["${{ github.event.inputs.repo }}"]' data.json)" >> $GITHUB_ENV
-          echo "CONFIG_FILE=$(jq -r '.CONFIG_FILES["${{ github.event.inputs.repo }}"]' data.json)" >> $GITHUB_ENV
-          echo "DIY_P1=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P1' data.json)" >> $GITHUB_ENV
-          echo "DIY_P2=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P2' data.json)" >> $GITHUB_ENV
-          echo "DIY_P3=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P3 // empty' data.json)" >> $GITHUB_ENV
-
-      - name: 根据选择设置分支
-        id: set_branch
-        run: |
-          if [ "${{ github.event.inputs.repo }}" == "lede-23.05" ] && [ "${{ github.event.inputs.branch_lede }}" != "关闭" ]; then
-            echo "REPO_BRANCH=${{ github.event.inputs.branch_lede }}" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.repo }}" == "immortalwrt-Mt798X" ] && [ "${{ github.event.inputs.branch_immortalwrt-Mt798X }}" != "关闭" ]; then
-            echo "REPO_BRANCH=${{ github.event.inputs.branch_immortalwrt-Mt798X }}" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.repo }}" == "immortalwrt" ] && [ "${{ github.event.inputs.branch_immortalwrt }}" != "关闭" ]; then
-            echo "REPO_BRANCH=${{ github.event.inputs.branch_immortalwrt }}" >> $GITHUB_ENV
-          else
-            echo "REPO_BRANCH=" >> $GITHUB_ENV
-          fi
-
-      - name: 输出所有环境变量值
-        run: |
-          echo "REPO_URL: $REPO_URL"
-          echo "REPO_BRANCH: $REPO_BRANCH"
-          echo "FEEDS_CONF: $FEEDS_CONF"
-          echo "CONFIG_FILE: $CONFIG_FILE"
-          echo "DIY_P1: $DIY_P1"
-          echo "DIY_P2: $DIY_P2"
-          echo "DIY_P3: $DIY_P3"
-          echo "UPLOAD_BIN_DIR: $UPLOAD_BIN_DIR"
-          echo "UPLOAD_FIRMWARE: $UPLOAD_FIRMWARE"
-          echo "UPLOAD_COWTRANSFER: $UPLOAD_COWTRANSFER"
-          echo "UPLOAD_WETRANSFER: $UPLOAD_WETRANSFER"
-          echo "UPLOAD_RELEASE: $UPLOAD_RELEASE"
-          echo "CACHE_TOOLCHAIN: $CACHE_TOOLCHAIN"
-          echo "TZ: $TZ"
-
       - name: 检查服务器性能
         run: |
           echo "警告⚠"
@@ -167,6 +122,51 @@ jobs:
           swap-size-mb: 1024
           temp-reserve-mb: 100
           root-reserve-mb: 1024
+          
+      - name: Clone当前仓库用于编译 # 检出当前仓库代码
+        uses: actions/checkout@v2
+        
+      - name: 安装jq # 安装jq 用于读取data.json
+        run: sudo apt-get install jq
+        
+      - name: 读取data配置
+        id: read_json
+        run: |
+          echo "REPO_URL=$(jq -r '.REPO_URLS["${{ github.event.inputs.repo }}"]' data.json)" >> $GITHUB_ENV
+          echo "CONFIG_FILE=$(jq -r '.CONFIG_FILES["${{ github.event.inputs.repo }}"]' data.json)" >> $GITHUB_ENV
+          echo "DIY_P1=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P1' data.json)" >> $GITHUB_ENV
+          echo "DIY_P2=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P2' data.json)" >> $GITHUB_ENV
+          echo "DIY_P3=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P3 // empty' data.json)" >> $GITHUB_ENV
+
+      - name: 根据选择设置分支
+        id: set_branch
+        run: |
+          if [ "${{ github.event.inputs.repo }}" == "lede-23.05" ] && [ "${{ github.event.inputs.branch_lede }}" != "关闭" ]; then
+            echo "REPO_BRANCH=${{ github.event.inputs.branch_lede }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.repo }}" == "immortalwrt-Mt798X" ] && [ "${{ github.event.inputs.branch_immortalwrt-Mt798X }}" != "关闭" ]; then
+            echo "REPO_BRANCH=${{ github.event.inputs.branch_immortalwrt-Mt798X }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.repo }}" == "immortalwrt" ] && [ "${{ github.event.inputs.branch_immortalwrt }}" != "关闭" ]; then
+            echo "REPO_BRANCH=${{ github.event.inputs.branch_immortalwrt }}" >> $GITHUB_ENV
+          else
+            echo "REPO_BRANCH=" >> $GITHUB_ENV
+          fi
+
+      - name: 输出所有环境变量值
+        run: |
+          echo "REPO_URL: $REPO_URL"
+          echo "REPO_BRANCH: $REPO_BRANCH"
+          echo "FEEDS_CONF: $FEEDS_CONF"
+          echo "CONFIG_FILE: $CONFIG_FILE"
+          echo "DIY_P1: $DIY_P1"
+          echo "DIY_P2: $DIY_P2"
+          echo "DIY_P3: $DIY_P3"
+          echo "UPLOAD_BIN_DIR: $UPLOAD_BIN_DIR"
+          echo "UPLOAD_FIRMWARE: $UPLOAD_FIRMWARE"
+          echo "UPLOAD_COWTRANSFER: $UPLOAD_COWTRANSFER"
+          echo "UPLOAD_WETRANSFER: $UPLOAD_WETRANSFER"
+          echo "UPLOAD_RELEASE: $UPLOAD_RELEASE"
+          echo "CACHE_TOOLCHAIN: $CACHE_TOOLCHAIN"
+          echo "TZ: $TZ"
 
       - name: 拉取源码 # 克隆选择源代码
         run: |
