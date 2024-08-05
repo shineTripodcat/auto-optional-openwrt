@@ -74,7 +74,7 @@ env:
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: ${{ github.event.inputs.UPLOAD_RELEASE }}  # 是否上传RELEASE
   UPLOAD_COWTRANSFER: ${{ github.event.inputs.UPLOAD_COWTRANSFER }}  # 是否上传COWTRANSFER
-  UPLOAD_WETRANSFER: ${{ github.event.inputs.UPLOAD_WETRANSFER }}e  # 是否上传WETRANSFER
+  UPLOAD_WETRANSFER: ${{ github.event.inputs.UPLOAD_WETRANSFER }}  # 是否上传WETRANSFER
   UPLOAD_BIN_DIR: false  # 是否上传Bin文件
   CACHE_TOOLCHAIN: true
   TZ: Asia/Shanghai # 时区设置
