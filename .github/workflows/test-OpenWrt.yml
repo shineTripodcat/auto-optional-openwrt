@@ -75,6 +75,8 @@ env:
   CACHE_TOOLCHAIN: true
   TZ: Asia/Shanghai
   FEEDS_CONF: feeds.conf.default
+  UPLOAD_RELEASE: ${{ github.event.inputs.UPLOAD_RELEASE }}
+  UPLOAD_FIRMWARE: ${{ github.event.inputs.UPLOAD_FIRMWARE }}
   
 jobs:
   example_job:
