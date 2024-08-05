@@ -108,6 +108,24 @@ jobs:
             echo "REPO_BRANCH=" >> $GITHUB_ENV
           fi
 
+      - name: Output environment variables
+        run: |
+          echo "REPO_URL: $REPO_URL"
+          echo "REPO_BRANCH: $REPO_BRANCH"
+          echo "FEEDS_CONF: $FEEDS_CONF"
+          echo "CONFIG_FILE: $CONFIG_FILE"
+          echo "DIY_P1: $DIY_P1"
+          echo "DIY_P2: $DIY_P2"
+          echo "DIY_P3: $DIY_P3"
+          echo "UPLOAD_BIN_DIR: $UPLOAD_BIN_DIR"
+          echo "UPLOAD_FIRMWARE: $UPLOAD_FIRMWARE"
+          echo "UPLOAD_COWTRANSFER: $UPLOAD_COWTRANSFER"
+          echo "UPLOAD_WETRANSFER: $UPLOAD_WETRANSFER"
+          echo "UPLOAD_RELEASE: $UPLOAD_RELEASE"
+          echo "CACHE_TOOLCHAIN: $CACHE_TOOLCHAIN"
+          echo "TZ: $TZ"
+
+
       - name: Check Server Performance
         run: |
           echo "警告⚠"
