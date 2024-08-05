@@ -5,23 +5,23 @@
     "immortalwrt": "https://github.com/immortalwrt/immortalwrt"
   },
   "CONFIG_FILES": {
-    "lede-23.05": "lede.config",
-    "immortalwrt-Mt798X": "imm.config",
-    "immortalwrt": "imm.config"
+    "lede-23.05": "lede/lede.config",
+    "immortalwrt-Mt798X": "immortalwrt-Mt798X/imm_mt798x.config",
+    "immortalwrt": "immortalwrt/imm.config"
   },
   "DIY_SCRIPTS": {
     "lede-23.05": {
-      "P1": "lede-23.05-DIY/diy-part1-lede.sh",
-      "P2": "lede-23.05-DIY/diy-part2-lede.sh"
+      "P1": "lede/diy-part1-lede.sh",
+      "P2": "lede/diy-part2-lede.sh"
     },
     "immortalwrt": {
-      "P1": "immortalwrt-DIY/diy-part1-imm.sh",
-      "P2": "immortalwrt-DIY/diy-part2-imm.sh"
+      "P1": "immortalwrt/diy-part1-imm.sh",
+      "P2": "immortalwrt/diy-part2-imm.sh"
     },
     "immortalwrt-Mt798X": {
-      "P1": "immortalwrt-Mt798X-DIY/diy-part1-mt798x.sh",
-      "P2": "immortalwrt-Mt798X-DIY/diy-part2-mt798x.sh",
-      "P3": "immortalwrt-Mt798X-DIY/diy-part3-mt798x.sh"
+      "P1": "immortalwrt-Mt798X/diy-part1-mt798x.sh",
+      "P2": "immortalwrt-Mt798X/diy-part2-mt798x.sh",
+      "P3": "immortalwrt-Mt798X/diy-part3-mt798x.sh"
     }
   }
 }
