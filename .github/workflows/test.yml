@@ -40,6 +40,14 @@ on:
           - 'openwrt-21.02'
           - 'openwrt-23.05'
           - '关闭'  # 添加关闭选项
+      CONFIG_FILE:
+        description: '请选择配置文件'
+        required: true
+        default: 'lede.config'
+        type: choice
+        options:
+          - 'lede.config'
+          - 'imm.config'
       SSH_ACTION:
         description: 'SSH远程配置固件'
         required: false
