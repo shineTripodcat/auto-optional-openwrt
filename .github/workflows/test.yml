@@ -54,22 +54,27 @@ on:
         required: false
         default: 'false'
         type: boolean
-      UPLOAD_FIRMWARE:
-        description: '上传固件到 Github Artifacts'
+      UPLOAD_WETRANSFER:
+        description: '上传固件到 WETRANSFER '
         required: false
-        default: 'true'
+        default: 'false'
+        type: boolean
+      UPLOAD_COWTRANSFER:
+        description: '上传固件到 COWTRANSFER '
+        required: false
+        default: 'false'
         type: boolean
       UPLOAD_RELEASE:
         description: '发布固件到 Github Releases'
         required: false
-        default: 'false'
+        default: 'true'
         type: boolean
 env:
   FEEDS_CONF: feeds.conf.default  # feeds文件
+  UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: ${{ github.event.inputs.UPLOAD_RELEASE }}  # 是否上传RELEASE
-  UPLOAD_FIRMWARE: ${{ github.event.inputs.UPLOAD_FIRMWARE }}  # 是否上传FIRMWARE
-  UPLOAD_COWTRANSFER: false  # 是否上传COWTRANSFER
-  UPLOAD_WETRANSFER: false  # 是否上传COWTRANSFER
+  UPLOAD_COWTRANSFER: ${{ github.event.inputs.UPLOAD_COWTRANSFER }}  # 是否上传COWTRANSFER
+  UPLOAD_WETRANSFER: ${{ github.event.inputs.UPLOAD_WETRANSFER }}e  # 是否上传WETRANSFER
   UPLOAD_BIN_DIR: false  # 是否上传Bin文件
   CACHE_TOOLCHAIN: true
   TZ: Asia/Shanghai # 时区设置
