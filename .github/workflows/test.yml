@@ -70,6 +70,9 @@ jobs:
   example_job:
     runs-on: ubuntu-22.04 # 配置运行环境为 Ubuntu 20.04
     steps:
+      - name: Clone 当前仓库 # 检出当前仓库代码
+        uses: actions/checkout@v2
+        
       - name: 安装jq # 安装jq 用于读取data.json
         run: sudo apt-get install jq
         
@@ -156,9 +159,6 @@ jobs:
           swap-size-mb: 1024
           temp-reserve-mb: 100
           root-reserve-mb: 1024
-
-      - name: Clone 当前仓库 # 检出当前仓库代码
-        uses: actions/checkout@v2
 
       - name: 拉取源码 # 克隆选择源代码
         run: |
