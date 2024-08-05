@@ -114,8 +114,8 @@ jobs:
           # 设置时区
           sudo timedatectl set-timezone "$TZ"
           # 创建工作目录并设置权限
-          # sudo mkdir -p /workdir
-          # sudo chown $USER:$GROUPS /workdir
+          sudo mkdir -p /workdir
+          sudo chown $USER:$GROUPS /workdir
 
       - name: 合并磁盘空间 # 调整磁盘空间的分配来优化构建环境
         uses: easimon/maximize-build-space@master
