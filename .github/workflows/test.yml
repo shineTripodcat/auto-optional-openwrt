@@ -67,7 +67,7 @@ env:
   
   
 jobs:
-  example_job:
+  auto_optional_openwrt:
     runs-on: ubuntu-22.04 # 配置运行环境为 Ubuntu 20.04
     steps:
       - name: Clone 当前仓库 # 检出当前仓库代码
