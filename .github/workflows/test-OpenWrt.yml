@@ -68,6 +68,9 @@ on:
         required: false
         default: 'false'
         type: boolean
+
+permissions:
+  contents: write  # 为内容提供写权限
 env:
   UPLOAD_COWTRANSFER: false
   UPLOAD_WETRANSFER: false
