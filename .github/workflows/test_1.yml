@@ -289,7 +289,7 @@ jobs:
           echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
 
       - name: 上传固件目录
-        uses: actions/upload-artifact@mian
+        uses: actions/upload-artifact@main
         if: steps.organize.outputs.status == 'success' && !cancelled()
         with:
           name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
