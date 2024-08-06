@@ -1,0 +1,350 @@
+name: test-OpenWrt # 工作流名称：构建 OpenWrt
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: '选择源码'
+        required: true
+        default: 'lede-23.05'
+        type: choice
+        options:
+          - 'lede-23.05'
+          - 'immortalwrt-Mt798X'
+          - 'immortalwrt'
+      branch_lede:
+        description: '分支 lede-23.05'
+        required: true
+        default: 'master'
+        type: choice
+        options:
+          - 'master'
+          - '关闭'  # 添加关闭选项
+      branch_immortalwrt-Mt798X:
+        description: '分支 immortalwrt-Mt798X'
+        required: true
+        default: 'master'
+        type: choice
+        options:
+          - 'openwrt-21.02'
+          - '关闭'  # 添加关闭选项
+      branch_immortalwrt:
+        description: '分支 immortalwrt'
+        required: true
+        default: 'master'
+        type: choice
+        options:
+          - 'master'
+          - 'openwrt-18.06'
+          - 'openwrt-18.06-k5.4'
+          - 'openwrt-21.02'
+          - 'openwrt-23.05'
+          - '关闭'  # 添加关闭选项
+      CONFIG_FILE:
+        description: '请选择配置文件'
+        required: true
+        default: 'lede.config'
+        type: choice
+        options:
+          - 'lede.config'
+          - 'imm.config'
+          - 'imm_mt798x.config'
+      SSH_ACTION:
+        description: 'SSH远程配置固件'
+        required: false
+        default: 'false'
+        type: boolean
+      UPLOAD_WETRANSFER:
+        description: '上传固件到 WETRANSFER '
+        required: false
+        default: 'false'
+        type: boolean
+      UPLOAD_COWTRANSFER:
+        description: '上传固件到 COWTRANSFER '
+        required: false
+        default: 'false'
+        type: boolean
+      UPLOAD_RELEASE:
+        description: '发布固件到 Github Releases'
+        required: false
+        default: 'true'
+        type: boolean
+env:
+  FEEDS_CONF: feeds.conf.default  # feeds文件
+  UPLOAD_FIRMWARE: true
+  UPLOAD_RELEASE: ${{ github.event.inputs.UPLOAD_RELEASE }}  # 是否上传RELEASE
+  UPLOAD_COWTRANSFER: ${{ github.event.inputs.UPLOAD_COWTRANSFER }}  # 是否上传COWTRANSFER
+  UPLOAD_WETRANSFER: ${{ github.event.inputs.UPLOAD_WETRANSFER }}  # 是否上传WETRANSFER
+  UPLOAD_BIN_DIR: false  # 是否上传Bin文件
+  CACHE_TOOLCHAIN: true
+  TZ: Asia/Shanghai # 时区设置
+
+jobs:
+  auto_optional_openwrt:
+    runs-on: ubuntu-22.04 # 配置运行环境为 Ubuntu 20.04
+    steps:
+      - name: 检查服务器性能
+        run: |
+          echo "警告⚠"
+          echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
+          echo -e "已知CPU型号(降序): 7763，8370C，8272CL，8171M，E5-2673\n"
+          echo "--------------------------CPU信息--------------------------"
+          echo "CPU物理数量: $(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
+          echo "CPU核心数量: $(nproc)"
+          echo -e "CPU型号信息: $(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')\n"
+          echo "--------------------------内存信息--------------------------"
+          echo "已安装内存详细信息:"
+          echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
+          echo "--------------------------硬盘信息--------------------------"
+          echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
+
+
+      - name: 初始化环境
+        env:
+          DEBIAN_FRONTEND: noninteractive # 禁用交互，默认选项自动选择。
+        run: |
+          # 删除所有本地 Docker 镜像
+          docker rmi $(docker images -q) || true
+          # 清理不需要的文件和目录
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          # 更新软件包列表
+          sudo -E apt-get -qq update
+          # 安装 Ubuntu 22.04 的依赖
+          sudo -E apt-get -qq install $(curl -fsSL is.gd/depends_ubuntu_2204)
+          # 自动清理不再需要的软件包
+          sudo -E apt-get -qq autoremove --purge
+          # 清理缓存
+          sudo -E apt-get -qq clean
+          # 设置时区
+          sudo timedatectl set-timezone "$TZ"
+          # 创建工作目录并设置权限
+          sudo mkdir -p /workdir
+          sudo chown $USER:$GROUPS /workdir
+
+      - name: 合并磁盘空间 # 调整磁盘空间的分配来优化构建环境
+        uses: easimon/maximize-build-space@master
+        with:
+          swap-size-mb: 1024
+          temp-reserve-mb: 100
+          root-reserve-mb: 1024
+          
+      - name: Clone当前仓库用于编译 # 检出当前仓库代码
+        uses: actions/checkout@v2
+        
+      - name: 安装jq # 安装jq 用于读取data.json
+        run: sudo apt-get install jq
+        
+      - name: 读取data配置
+        id: read_json
+        run: |
+          echo "REPO_URL=$(jq -r '.REPO_URLS["${{ github.event.inputs.repo }}"]' data.json)" >> $GITHUB_ENV
+          echo "CONFIG_FILE=$(jq -r '.CONFIG_FILES["${{ github.event.inputs.repo }}"]' data.json)" >> $GITHUB_ENV
+          echo "DIY_P1=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P1' data.json)" >> $GITHUB_ENV
+          echo "DIY_P2=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P2' data.json)" >> $GITHUB_ENV
+          echo "DIY_P3=$(jq -r '.DIY_SCRIPTS["${{ github.event.inputs.repo }}"].P3 // empty' data.json)" >> $GITHUB_ENV
+
+      - name: 根据选择设置分支
+        id: set_branch
+        run: |
+          if [ "${{ github.event.inputs.repo }}" == "lede-23.05" ] && [ "${{ github.event.inputs.branch_lede }}" != "关闭" ]; then
+            echo "REPO_BRANCH=${{ github.event.inputs.branch_lede }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.repo }}" == "immortalwrt-Mt798X" ] && [ "${{ github.event.inputs.branch_immortalwrt-Mt798X }}" != "关闭" ]; then
+            echo "REPO_BRANCH=${{ github.event.inputs.branch_immortalwrt-Mt798X }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.repo }}" == "immortalwrt" ] && [ "${{ github.event.inputs.branch_immortalwrt }}" != "关闭" ]; then
+            echo "REPO_BRANCH=${{ github.event.inputs.branch_immortalwrt }}" >> $GITHUB_ENV
+          else
+            echo "REPO_BRANCH=" >> $GITHUB_ENV
+          fi
+
+      - name: 输出所有环境变量值
+        run: |
+          echo "REPO_URL: $REPO_URL"
+          echo "REPO_BRANCH: $REPO_BRANCH"
+          echo "FEEDS_CONF: $FEEDS_CONF"
+          echo "CONFIG_FILE: $CONFIG_FILE"
+          echo "DIY_P1: $DIY_P1"
+          echo "DIY_P2: $DIY_P2"
+          echo "DIY_P3: $DIY_P3"
+          echo "UPLOAD_BIN_DIR: $UPLOAD_BIN_DIR"
+          echo "UPLOAD_FIRMWARE: $UPLOAD_FIRMWARE"
+          echo "UPLOAD_COWTRANSFER: $UPLOAD_COWTRANSFER"
+          echo "UPLOAD_WETRANSFER: $UPLOAD_WETRANSFER"
+          echo "UPLOAD_RELEASE: $UPLOAD_RELEASE"
+          echo "CACHE_TOOLCHAIN: $CACHE_TOOLCHAIN"
+          echo "TZ: $TZ"
+
+      - name: 拉取源码 # 克隆选择源代码
+        run: |
+          df -hT $PWD
+          git clone $REPO_URL -b $REPO_BRANCH openwrt
+          cd openwrt
+          echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
+
+      - name: 提取配置信息
+        run: |
+          cp $CONFIG_FILE $OPENWRT_PATH/.config
+          cd $OPENWRT_PATH
+          make defconfig > /dev/null 2>&1
+          SOURCE_REPO="$(echo $REPO_URL | awk -F '/' '{print $(NF)}')"
+          echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_ENV
+          DEVICE_TARGET=$(cat .config | grep CONFIG_TARGET_BOARD | awk -F '"' '{print $2}')
+          echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_ENV
+          DEVICE_SUBTARGET=$(cat .config | grep CONFIG_TARGET_SUBTARGET | awk -F '"' '{print $2}')
+          echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
+          DEVICE_PROFILE=$(cat .config | grep CONFIG_TARGET_PROFILE | awk -F '"' '{print $2}')
+          echo "DEVICE_PROFILE=$DEVICE_PROFILE" >> $GITHUB_ENV  # 添加这一行
+          COMMIT_AUTHOR=$(git show -s --date=short --format="作者: %an")
+          echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
+          COMMIT_DATE=$(git show -s --date=short --format="时间: %ci")
+          echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
+          COMMIT_MESSAGE=$(git show -s --date=short --format="内容: %s")
+          echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
+          COMMIT_HASH=$(git show -s --date=short --format="hash: %H")
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+
+      - name: 缓存工具链，加速编译 # CACHE_TOOLCHAIN环境变量控制
+        if: env.CACHE_TOOLCHAIN == 'true'
+        uses: HiGarfield/cachewrtbuild@main
+        with:
+          ccache: true
+          mixkey: ${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
+          prefix: ${{ env.OPENWRT_PATH }}
+
+      - name: 加载自定义feeds-P1
+        run: |
+          [ -e "$FEEDS_CONF" ] && mv "$FEEDS_CONF" openwrt/feeds.conf.default
+          chmod +x "$GITHUB_WORKSPACE/$DIY_P1"
+          cd openwrt
+          "$GITHUB_WORKSPACE/$DIY_P1"
+
+
+      - name: 更新feeds
+        run: cd openwrt && ./scripts/feeds update -a
+
+      - name: 判定是否加载DIY_P3_SH
+        if: github.event.inputs.repo == 'immortalwrt-Mt798X'
+        run: |
+          chmod +x $DIY_P3
+          cd openwrt
+          $GITHUB_WORKSPACE/$DIY_P3
+
+      - name: 安装feeds
+        run: cd openwrt && ./scripts/feeds install -a
+
+      - name: 加载自定义DIY-P2
+        run: |
+          [ -e files ] && mv files openwrt/files
+          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+          chmod +x "$GITHUB_WORKSPACE/$DIY_P2"
+          cd openwrt
+          $GITHUB_WORKSPACE/$DIY_P2
+
+      - name: S连接到 Actions 的 SSH
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: (github.event.inputs.SSH_ACTION == 'true' && github.event.inputs.SSH_ACTION != 'false') || contains(github.event.action, 'ssh')
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+
+      - name: 下载包
+        id: package
+        run: |
+          cd openwrt
+          make defconfig
+          make download -j8
+          find dl -size -1024c -exec ls -l {} \;
+          find dl -size -1024c -exec rm -f {} \;
+
+      - name: 编译固件
+        id: compile
+        run: |
+          cd openwrt
+          echo -e "$(nproc) thread compile"
+          make -j$(nproc) || make -j1 || make -j1 V=s
+          echo "status=success" >> $GITHUB_OUTPUT
+          grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+          [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+          echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
+      - name: 检查空间使用情况
+        if: (!cancelled())
+        run: df -hT
+
+      - name: 上传 bin 目录
+        uses: actions/upload-artifact@v3
+        if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+        with:
+          name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+          path: openwrt/bin
+
+      - name: 整理文件
+        id: organize
+        if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+        run: |
+          cd openwrt/bin/targets/*/*
+          rm -rf packages
+          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+          echo "status=success" >> $GITHUB_OUTPUT
+          echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
+          echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
+
+      - name: 上传固件目录
+        uses: actions/upload-artifact@main
+        if: steps.organize.outputs.status == 'success' && !cancelled()
+        with:
+          name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+          path: ${{ env.FIRMWARE }}
+
+      - name: 上传固件到 cowtransfer
+        id: cowtransfer
+        if: steps.organize.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
+        run: |
+          curl -fsSL git.io/file-transfer | sh
+          ./transfer cow --block 2621440 -s -p 64 --no-progress ${FIRMWARE} 2>&1 | tee cowtransfer.log
+          echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
+          echo "url=$(cat cowtransfer.log | grep https | cut -f3 -d' ')" >> $GITHUB_OUTPUT
+
+      - name: 上传固件到 WeTransfer
+        id: wetransfer
+        if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
+        run: |
+          curl -fsSL git.io/file-transfer | sh
+          ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
+          echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
+          echo "url=$(cat wetransfer.log | grep https | cut -f3 -d' ')" >> $GITHUB_OUTPUT
+
+      - name: 生成发布标签
+        id: tag
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        run: |
+          echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+          touch release.txt
+          [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
+          [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: 上传固件至release
+        uses: ncipollo/release-action@v1
+        if: steps.tag.outputs.status == 'success' && !cancelled()
+        with:
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ steps.tag.outputs.release_tag }} for ${{ env.DEVICE_PROFILE }} 
+          tag: ${{ steps.tag.outputs.release_tag }}
+          artifacts: ${{ env.FIRMWARE }}/*
+          body: |
+            **This is OpenWrt Firmware**
+            ### 📒 固件信息
+            - 💻 平台架构: mediatek-filogic
+            - ⚽ 固件源码: ${{ env.REPO_URL }}
+            - 💝 源码分支: ${{ env.REPO_BRANCH }}
+            - 🚀 内核版本: ${{ env.KERNEL }}
+            - 🌐 默认地址: 192.168.50.1
+            - 🔑 默认密码: password
+            ### 🧊 固件版本
+            - 固件编译前最后一次➦[主源码](${{ env.REPO_URL }})更新记录
+            - ${{ env.COMMIT_AUTHOR }}
+            - ${{ env.COMMIT_DATE }}
+            - ${{ env.COMMIT_MESSAGE }}
+            - ${{ env.COMMIT_HASH }}
