@@ -328,10 +328,9 @@ jobs:
         if: steps.tag.outputs.status == 'success' && !cancelled()
 
         with:
-          allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ steps.tag.outputs.release_tag }}
-          tag: ${{ steps.tag.outputs.release_tag }}
+          tag_name: ${{ steps.tag.outputs.release_tag }}
           artifacts: ${{ env.FIRMWARE }}/*
           body: |
             **This is OpenWrt **
