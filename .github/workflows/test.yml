@@ -322,18 +322,17 @@ jobs:
           [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: 上传固件到release
-        uses: softprops/action-gh-release@v1
+      - name: Upload firmware to release
+        uses: ncipollo/release-action@v1
         if: steps.tag.outputs.status == 'success' && !cancelled()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: ${{ steps.tag.outputs.release_tag }}
-          tag_name: ${{ steps.tag.outputs.release_tag }}
-          files: ${{ env.FIRMWARE }}/*
+          name: XiaoMi AX3000T ${{ steps.tag.outputs.release_tag }}
+          tag: ${{ steps.tag.outputs.release_tag }}
+          artifacts: ${{ env.FIRMWARE }}/*
           body: |
-            **This is OpenWrt**
+            **This is OpenWrt Firmware for XiaoMi AX3000T**
             ### 📒 固件信息
             - 💻 平台架构: mediatek-filogic
             - ⚽ 固件源码: ${{ env.REPO_URL }}
@@ -341,8 +340,7 @@ jobs:
             - 🚀 内核版本: ${{ env.KERNEL }}
             - 🌐 默认地址: 192.168.50.1
             - 🔑 默认密码: password
-            - 👌 使用方法：immortalwrt-21.02源码在uboot中选择immortalwrt-112m选项刷入squashfs-factory格式固件，如果原本为immortalwrt-21.02固件的话可下载squashfs-sysupgrade在web页面更新升级中使用。
-            - lede-23.05源码在uboot中选择qwrt选项刷入squashfs-sysupgrade格式固件
+            - 👌 使用方法：在uboot中选择qwrt选项刷入squashfs-sysupgrade格式固件。
             ### 🧊 固件版本
             - 固件编译前最后一次➦[主源码](${{ env.REPO_URL }})更新记录
             - ${{ env.COMMIT_AUTHOR }}
