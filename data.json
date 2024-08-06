@@ -12,11 +12,13 @@
   "DIY_SCRIPTS": {
     "lede-23.05": {
       "P1": "lede/diy-part1-lede.sh",
-      "P2": "lede/diy-part2-lede.sh"
+      "P2": "lede/diy-part2-lede.sh",
+      "P3": "lede/diy-part3-lede.sh"
     },
     "immortalwrt": {
       "P1": "immortalwrt/diy-part1-imm.sh",
-      "P2": "immortalwrt/diy-part2-imm.sh"
+      "P2": "immortalwrt/diy-part2-imm.sh",
+      "P3": "immortalwrt/diy-part3-imm.sh"
     },
     "immortalwrt-Mt798X": {
       "P1": "immortalwrt-Mt798X/diy-part1-mt798x.sh",
