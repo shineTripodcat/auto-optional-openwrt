@@ -78,8 +78,6 @@ env:
   UPLOAD_BIN_DIR: false  # 是否上传Bin文件
   CACHE_TOOLCHAIN: true
   TZ: Asia/Shanghai # 时区设置
-permissions:
-  contents: write  # 为内容提供写权限
   
 jobs:
   auto_optional_openwrt:
