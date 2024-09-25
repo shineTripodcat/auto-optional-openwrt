@@ -17,4 +17,6 @@ rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,v2ray*,sing*,sm
 rm -rf feeds/packages/utils/v2dat
 rm -rf feeds/packages/lang/golang
 git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
+mv feeds/small/luci-app-mihomo feeds/luci/applications/
+./scripts/feeds update -a
 ./scripts/feeds install -a 
