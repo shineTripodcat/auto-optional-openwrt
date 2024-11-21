@@ -8,7 +8,7 @@ rm -f iycms.zip
 wget --no-check-certificate "https://www.iycms.com/api/v1/download/cms/latest?os=1&kind=x86_64" -O iycms.zip
 
 echo "解压文件"
-unzip -o -q iycms.zip -d /home/iycms
+unzip -o -q iycms.zip -d /usr/home/shine1223/iycms
 rm -f iycms.zip
 
 echo "开始安装系统服务"
@@ -25,7 +25,7 @@ cat <<EOF > /usr/local/etc/rc.d/iycms
 
 name=iycms
 rcvar=iycms_enable
-command=/home/iycms/cms
+command=/usr/home/shine1223/iycms/cms
 pidfile=/var/run/\$name.pid
 
 load_rc_config \$name
