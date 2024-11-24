@@ -1,9 +1,9 @@
 # 直连列表
 
 ##域名完全匹配
-DOMAIN,ss.277727.xyz
+##DOMAIN,ss.277727.xyz
 
-DOMAIN-SUFFIX,ddefg.vip
+##DOMAIN-SUFFIX,ddefg.vip
 
 ##域名后缀匹配
 +.wanmei.com
@@ -47,3 +47,5 @@ DOMAIN-SUFFIX,ddefg.vip
 +.qrssv.com
 +.jzuqfavoibww.com
 +.miaosdk.com
++.ss.277727.xyz
++.wjmgijixqcbc.com
