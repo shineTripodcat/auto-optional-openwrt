@@ -127,11 +127,11 @@
       { "tag": "geosite-geolocation-!cn", "type": "remote", "format": "binary", "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/geolocation-!cn.srs", "download_detour": "🎯 全球直连" },
       { "tag": "geosite-cn", "type": "remote", "format": "binary", "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/cn.srs", "download_detour": "🎯 全球直连" },
       { "tag": "geosite-private", "type": "remote", "format": "binary", "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/private.srs", "download_detour": "🎯 全球直连" },
-      { "tag": "geosite-zhilian", "type": "remote", "format": "source", "url": "https://ghfast.top/https://raw.277727.xyz/shinetripodcat/BestIP/main/rules/zhilian.json?token=shine1223", "download_detour": "🎯 全球直连" },
-      { "tag": "geosite-daili", "type": "remote", "format": "source", "url": "https://ghfast.top/https://raw.277727.xyz/shinetripodcat/BestIP/main/rules/daili.json?token=shine1223", "download_detour": "🎯 全球直连" },
+      { "tag": "geosite-zhilian", "type": "remote", "format": "source", "url": "https://ghfast.top/https://github.com/shineTripodcat/auto-optional-openwrt/raw/refs/heads/main/rule/rules/zhilian.srs", "download_detour": "🎯 全球直连" },
+      { "tag": "geosite-daili", "type": "remote", "format": "source", "url": "https://ghfast.top/https://github.com/shineTripodcat/auto-optional-openwrt/raw/refs/heads/main/rule/rules/daili.srs", "download_detour": "🎯 全球直连" },
 
 
-      { "tag": "geoip-dailiip", "type": "remote", "format": "source", "url": "https://ghfast.top/https://raw.277727.xyz/shinetripodcat/BestIP/main/rules/dailiip.json?token=shine1223", "download_detour": "🎯 全球直连" },
+      { "tag": "geoip-dailiip", "type": "remote", "format": "source", "url": "https://ghfast.top/https://github.com/shineTripodcat/auto-optional-openwrt/raw/refs/heads/main/rule/rules/dailiip.srs", "download_detour": "🎯 全球直连" },
       { "tag": "geoip-google", "type": "remote", "format": "binary", "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/google.srs", "download_detour": "🎯 全球直连" },
       { "tag": "geoip-telegram", "type": "remote", "format": "binary", "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/telegram.srs", "download_detour": "🎯 全球直连" },     
       { "tag": "geoip-netflix", "type": "remote", "format": "binary", "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/netflix.srs", "download_detour": "🎯 全球直连" },     
