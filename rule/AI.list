@@ -4,6 +4,7 @@
 DOMAIN-KEYWORD,openai
 DOMAIN-KEYWORD,anthropic
 DOMAIN-KEYWORD,Claude
+DOMAIN-KEYWORD,emby-data
 
 # 域名后缀匹配
 DOMAIN-SUFFIX,perplexity.ai
@@ -30,3 +31,4 @@ DOMAIN-SUFFIX,em.277727.xyz
 DOMAIN-SUFFIX,npm.277727.xyz
 DOMAIN-SUFFIX,open.277727.xyz
 DOMAIN-SUFFIX,emby-data.r2s.site
+DOMAIN-SUFFIX,emby-data.ymschh.top
