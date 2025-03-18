@@ -6,7 +6,6 @@ DOMAIN-KEYWORD,anthropic
 DOMAIN-KEYWORD,Claude
 DOMAIN-KEYWORD,emby-data
 DOMAIN-KEYWORD,xiaoya
-DOMAIN-KEYWORD,tmdb
 
 # 域名后缀匹配
 DOMAIN-SUFFIX,perplexity.ai
