@@ -5,7 +5,7 @@ DOMAIN-KEYWORD,openai
 DOMAIN-KEYWORD,anthropic
 DOMAIN-KEYWORD,Claude
 DOMAIN-KEYWORD,emby-data
-DOMAIN-KEYWORD,xiaoya
+
 
 # 域名后缀匹配
 DOMAIN-SUFFIX,perplexity.ai
@@ -34,4 +34,3 @@ DOMAIN-SUFFIX,open.277727.xyz
 DOMAIN-SUFFIX,emby-data.r2s.site
 DOMAIN-SUFFIX,emby-data.ymschh.top
 DOMAIN-SUFFIX,emby.xiaoya.pro
-DOMAIN-SUFFIX,tmdb.org
