@@ -34,7 +34,7 @@ DOMAIN-SUFFIX,client-rapi-missav.recombee.com
 DOMAIN-SUFFIX,readyserver.sg
 DOMAIN-SUFFIX,s9ko.avp76.net
 DOMAIN-SUFFIX,movie-pilot.org
-DOMAIN-SUFFIX,DOMAIN-SUFFIX,
+DOMAIN-SUFFIX,vertex-app.top
 
 IP-CIDR,8.8.8.8/32,no-resolve
 IP-CIDR,8.8.4.4/32,no-resolve
