@@ -7,7 +7,7 @@ DOMAIN-SUFFIX,qichiyu.com
 DOMAIN-KEYWORD,1e100
 
 # 国外DNS
-DOMAIN-SUFFIX,dns.google
+DOMAIN-SUFFIX,svcloud.one
 DOMAIN-SUFFIX,1dot1dot1dot1.cloudflare-dns.com
 DOMAIN-SUFFIX,dot.sb
 DOMAIN-SUFFIX,dns.umbrella.com
@@ -18,6 +18,24 @@ DOMAIN-SUFFIX,doh.dns.sb
 DOMAIN-SUFFIX,doh.opendns.com
 DOMAIN-SUFFIX,dns.quad9.net
 DOMAIN-SUFFIX,hk-hkg.doh.sb
+DOMAIN-SUFFIX,svcloud.one
+DOMAIN-SUFFIX,v2rayssr.com
+DOMAIN-SUFFIX,sub.huawei-cloud.shop
+DOMAIN-SUFFIX,emby.raydoom.tk
+DOMAIN-SUFFIX,emby.xiaoya.pro
+DOMAIN-SUFFIX,icyou.eu.org
+DOMAIN-SUFFIX,embyxiaoya.laogl.top
+DOMAIN-SUFFIX,emby.raydoom.tk
+DOMAIN-SUFFIX,bulianglin.com
+DOMAIN-SUFFIX,hjw01.com
+DOMAIN-SUFFIX,missav.ws
+DOMAIN-SUFFIX,missav.ai
+DOMAIN-SUFFIX,client-rapi-missav.recombee.com
+DOMAIN-SUFFIX,readyserver.sg
+DOMAIN-SUFFIX,s9ko.avp76.net
+DOMAIN-SUFFIX,movie-pilot.org
+DOMAIN-SUFFIX,DOMAIN-SUFFIX,
+
 IP-CIDR,8.8.8.8/32,no-resolve
 IP-CIDR,8.8.4.4/32,no-resolve
 IP-CIDR,1.1.1.1/32,no-resolve
@@ -25,3 +43,5 @@ IP-CIDR,1.0.0.1/32,no-resolve
 IP-CIDR,185.222.222.222/32,no-resolve
 IP-CIDR,208.67.222.222/32,no-resolve
 IP-CIDR,208.67.220.220/32,no-resolve
+IP-CIDR,142.171.233.230/32,no-resolve
+IP-CIDR,142.171.7.134/32,no-resolve
