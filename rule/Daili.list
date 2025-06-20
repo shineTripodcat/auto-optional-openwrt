@@ -36,6 +36,7 @@ DOMAIN-SUFFIX,s9ko.avp76.net
 DOMAIN-SUFFIX,movie-pilot.org
 DOMAIN-SUFFIX,vertex-app.top
 
+# ============== IP规则（IP-CIDR，需与域名规则分离） ==============
 IP-CIDR,8.8.8.8/32,no-resolve
 IP-CIDR,8.8.4.4/32,no-resolve
 IP-CIDR,1.1.1.1/32,no-resolve
