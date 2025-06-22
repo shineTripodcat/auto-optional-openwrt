@@ -35,6 +35,8 @@ DOMAIN-SUFFIX,readyserver.sg
 DOMAIN-SUFFIX,s9ko.avp76.net
 DOMAIN-SUFFIX,movie-pilot.org
 DOMAIN-SUFFIX,vertex-app.top
+DOMAIN-SUFFIX,ptcafe.club
+DOMAIN-SUFFIX,ptfans.cc
 
 # ============== IP规则（IP-CIDR，需与域名规则分离） ==============
 IP-CIDR,8.8.8.8/32,no-resolve
