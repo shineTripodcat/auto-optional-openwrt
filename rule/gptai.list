@@ -12,3 +12,10 @@ DOMAIN-SUFFIX,intercomcdn.com
 DOMAIN-SUFFIX,oaistatic.com
 DOMAIN-SUFFIX,oaiusercontent.com
 DOMAIN-SUFFIX,openai.com
+
+
+
+# 域名后缀匹配-特殊
+DOMAIN-SUFFIX,javten.com
+DOMAIN-SUFFIX,javlibrary.com
+DOMAIN-SUFFIX,xchina.co
