@@ -19,3 +19,6 @@ DOMAIN-SUFFIX,openai.com
 DOMAIN-SUFFIX,javten.com
 DOMAIN-SUFFIX,javlibrary.com
 DOMAIN-SUFFIX,xchina.co
+
+# 域名后缀匹配
+DOMAIN-SUFFIX,npmmirror.com
